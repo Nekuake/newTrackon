@@ -1,8 +1,8 @@
 # newTrackon
 
 [![Requirements Status](https://requires.io/github/CorralPeltzer/newTrackon/requirements.svg?branch=master)](https://requires.io/github/CorralPeltzer/newTrackon/requirements/?branch=master)
-[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/corralpeltzer/newtrackon)](https://hub.docker.com/r/corralpeltzer/newtrackon)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/CorralPeltzer/newTrackon.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/CorralPeltzer/newTrackon/context:python)
+[![buildx](https://github.com/CorralPeltzer/newTrackon/workflows/buildx/badge.svg)](https://github.com/CorralPeltzer/newTrackon/actions?query=workflow%3Abuildx)
 
 newTrackon is a service to monitor the status and health of existing open and public trackers that anyone can use.
 It also allows to submit new trackers to add them to the list.
@@ -34,7 +34,7 @@ docker run -d -p 8080:8080 corralpeltzer/newtrackon --address=0.0.0.0
 You can now access to the main page opening in your browser `http://localhost:8080`.
 
 ### With pipenv
-After cloning the repo, make sure you have `curl`, `python3.6`, `pip` and `pipenv`.
+After cloning the repo, make sure you have a working Python 3.8 environment and `pipenv`.
 
 Install the pipenv environment and dependencies:
 ```

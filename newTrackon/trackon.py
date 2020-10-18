@@ -4,7 +4,7 @@ from time import time, sleep
 from urllib.parse import urlparse
 from threading import Lock
 from newTrackon.tracker import Tracker
-from newTrackon.scraper import scrape_submitted
+from newTrackon.scraper import attempt_submitted
 from newTrackon import db
 from newTrackon.persistence import (
     submitted_history_file,
@@ -104,7 +104,7 @@ def process_new_tracker(tracker_candidate):
             tracker_candidate.latency,
             tracker_candidate.interval,
             tracker_candidate.url,
-        ) = scrape_submitted(tracker_candidate)
+        ) = attempt_submitted(tracker_candidate)
     except (RuntimeError, ValueError):
         return
     if (
@@ -116,8 +116,10 @@ def process_new_tracker(tracker_candidate):
         debug.update(
             {
                 "status": 0,
-                "info": info
-                + "<br>Tracker rejected for having an interval shorter than 5 minutes or longer than 3 hours",
+                "info": [
+                    info[0],
+                    "Tracker rejected for having an interval shorter than 5 minutes or longer than 3 hours",
+                ],
             }
         )
         submitted_data.appendleft(debug)
@@ -139,7 +141,12 @@ def update_outdated_trackers():
         for tracker in trackers_outdated:
             logger.info(f"Updating {tracker.url}")
             tracker.update_status()
-            db.update_tracker(tracker)
+
+            if tracker.last_uptime < (now - 47304000):
+                logger.info(f"Removing {tracker.url}")
+                db.delete_tracker(tracker)
+            else:
+                db.update_tracker(tracker)
             save_deque_to_disk(raw_data, raw_history_file)
         detect_new_ip_duplicates()
         sleep(5)
